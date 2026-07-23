@@ -31,7 +31,9 @@ function Dashboard() {
         { event: "*", schema: "public", table: "sales_deals" },
         () => loadData(),
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log("📡 Realtime 連線狀態:", status);
+      });
 
     return () => {
       isMounted = false;
