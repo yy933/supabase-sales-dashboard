@@ -1,49 +1,40 @@
-import { useEffect, useState } from "react";
-import supabase from "./supabase-client";
+import { useState, useEffect } from "react";
+import { getSalesMetrics } from "./utils/getSalesMetrics";
 import Chart from "./Chart";
 import Form from "./Form";
+import supabase from "./supabase-client";
 
 function Dashboard() {
   const [metrics, setMetrics] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchMetrics() {
+    let isMounted = true;
+
+    async function loadData() {
       try {
-        const { data, error } = await supabase
-          .from("sales_deals")
-          .select("name, sum_value:value.sum()");
-
-        if (error) throw error;
-
-        setMetrics(data);
-        console.log("Fetch success data:", data);
+        const data = await getSalesMetrics();
+        if (isMounted) setMetrics(data);
       } catch (error) {
-        console.log("Fetch data error: ", error);
+        console.error("Fetch data error: ", error);
       } finally {
-        setIsLoading(false);
+        if (isMounted) setIsLoading(false);
       }
     }
-    fetchMetrics();
+
+    loadData();
 
     const channel = supabase
       .channel("deal-changes")
       .on(
         "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "sales_deals",
-        },
-        (payload) => {
-          console.log("New deal:", payload.new);
-          // Action
-        },
+        { event: "*", schema: "public", table: "sales_deals" },
+        () => loadData(),
       )
       .subscribe();
 
-    // Clean up subscription
     return () => {
+      isMounted = false;
       supabase.removeChannel(channel);
     };
   }, []);
