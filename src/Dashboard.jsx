@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import supabase from "./supabase-client";
 import Chart from "./Chart";
+import Form from "./Form";
 
 function Dashboard() {
   const [metrics, setMetrics] = useState([]);
@@ -54,7 +55,10 @@ function Dashboard() {
         {isLoading ? (
           <p>Loading...</p>
         ) : metrics.length > 0 ? (
-          <Chart data={metrics} />
+          <>
+            <Chart data={metrics} />
+            <Form data={metrics} />
+          </>
         ) : (
           <p>No data found.</p>
         )}
