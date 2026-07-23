@@ -1,17 +1,6 @@
 import { useEffect, useState } from "react";
 import supabase from "./supabase-client";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
-
-
+import Chart from "./Chart";
 
 function Dashboard() {
   const [metrics, setMetrics] = useState([]);
@@ -22,7 +11,7 @@ function Dashboard() {
       try {
         const { data, error } = await supabase
           .from("sales_deals")
-          .select("name, sum_value:value.sum()")
+          .select("name, sum_value:value.sum()");
 
         if (error) throw error;
 
@@ -36,10 +25,6 @@ function Dashboard() {
     }
     fetchMetrics();
   }, []);
-  
-
-  
- 
 
   return (
     <div className="dashboard-wrapper">
@@ -48,25 +33,7 @@ function Dashboard() {
         {isLoading ? (
           <p>Loading...</p>
         ) : metrics.length > 0 ? (
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={metrics}
-              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis width="auto" />
-              <Tooltip />
-              <Legend />
-              <Bar
-                name="Sales ($)"
-                dataKey="sum_value"
-                fill="#58d675"
-                radius={[8, 8, 0, 0]}
-              />
-              
-            </BarChart>
-          </ResponsiveContainer>
+          <Chart data={metrics} />
         ) : (
           <p>No data found.</p>
         )}
