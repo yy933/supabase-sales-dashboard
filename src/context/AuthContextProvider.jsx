@@ -43,8 +43,35 @@ export default function AuthContextProvider({ children }) {
       subscription?.unsubscribe();
     };
   }, []);
+
+  const signInUser = async (email, password) => {
+    try {
+      //supabase method
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.toLowerCase(),
+        password,
+      });
+      //handle supabase error explicitly
+      if (error) {
+        return { success: false, error: error.message };
+      }
+      //success
+      console.log("supabase sign in success: ", data);
+      return {
+        success: true,
+        data,
+      };
+    } catch (error) {
+      //Unexpected error
+      console.error("unexpected error occured during sign in: ", error.message);
+      return {
+        success: false,
+        error: "An unexpected error occurred. Please try again.",
+      };
+    }
+  };
   return (
-    <AuthContext.Provider value={{ session, loading }}>
+    <AuthContext.Provider value={{ session, loading, signInUser }}>
       {children}
     </AuthContext.Provider>
   );
