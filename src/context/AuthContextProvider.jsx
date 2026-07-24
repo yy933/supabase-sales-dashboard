@@ -30,10 +30,18 @@ export default function AuthContextProvider({ children }) {
 
     getInitialSession();
 
+    //2) Listen for changes in auth state
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setLoading(false);
+    });
+
     return () => {
       isMounted = false;
+      subscription?.unsubscribe();
     };
-    //2) Listen for changes in auth state
   }, []);
   return (
     <AuthContext.Provider value={{ session, loading }}>
