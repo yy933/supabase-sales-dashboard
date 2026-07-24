@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getSalesMetrics } from "../utils/getSalesMetrics";
-import Chart from "../Chart";
+import Chart from "../components/Chart";
 import Form from "../components/Form";
 import supabase from "../supabase-client";
 
