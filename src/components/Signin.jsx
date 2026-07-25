@@ -17,7 +17,7 @@ const Signin = () => {
       } = await signInUser(userSignInData.email, userSignInData.password);
       //3. Handle known errors (return error)
       if (signInError)
-        return new Error("Sign in failed: ", signInError.message);
+        return new Error(signInError);
       //4. Handle success (e.g. redirect, return null)
       if (success && data?.session) {
         //Navigate to /dashboard
