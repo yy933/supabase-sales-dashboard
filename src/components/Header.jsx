@@ -1,7 +1,35 @@
+import { useAuth } from "../Hooks/useAuth";
+import { useState } from "react";
+import { Navigate } from "react-router-dom";
 function Header() {
+  const { signOut } = useAuth();
+  const [error, setError] = useState(null);
+  const handleSignOut = async (e) => {
+    e.preventDefault();
+    const { success, error } = await signOut();
+    if (success) {
+      return <Navigate to="/" />;
+    } else {
+      setError(error.message);
+    }
+  };
   return (
     <>
       <header>
+        <div
+          className="header-email"
+          role="navigation"
+          aria-label="User account navigation"
+        >
+          <button onClick={handleSignOut} aria-label="Sign out of your account">
+            Sign out
+          </button>
+          {error && (
+            <div role="role" className="error-message" id="signout-error">
+              {error}
+            </div>
+          )}
+        </div>
         <h1>
           <svg
             width="28"
