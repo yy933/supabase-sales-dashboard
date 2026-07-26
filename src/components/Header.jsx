@@ -1,14 +1,15 @@
 import { useAuth } from "../Hooks/useAuth";
 import { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 function Header() {
   const { signOut } = useAuth();
+  const navigate = useNavigate();
   const [error, setError] = useState(null);
   const handleSignOut = async (e) => {
     e.preventDefault();
     const { success, error } = await signOut();
     if (success) {
-      return <Navigate to="/" />;
+      navigate("/");
     } else {
       setError(error.message);
     }
