@@ -1,6 +1,8 @@
 import { useActionState } from "react";
 import { useAuth } from "../Hooks/useAuth";
+import { useNavigate, Link } from "react-router-dom";
 const Signin = () => {
+  const navigate = useNavigate();
   const { signInUser } = useAuth();
   const [error, submitAction, isPending] = useActionState(
     async (prevState, formData) => {
@@ -16,11 +18,11 @@ const Signin = () => {
         error: signInError,
       } = await signInUser(userSignInData.email, userSignInData.password);
       //3. Handle known errors (return error)
-      if (signInError)
-        return new Error(signInError);
+      if (signInError) return new Error(signInError);
       //4. Handle success (e.g. redirect, return null)
       if (success && data?.session) {
         //Navigate to /dashboard
+        navigate("/dashboard");
         return null;
       }
     },
@@ -42,9 +44,11 @@ const Signin = () => {
 
           <h2 className="form-title">Sign in</h2>
           <p>
-            Don't have an account yet? {/*<Link className="form-link">*/}
-            Sign up
-            {/*</Link>*/}
+            Don't have an account yet? 
+            <Link to="/signup" className="form-link">
+              {" "}
+              Sign up
+            </Link>
           </p>
 
           <label htmlFor="email">Email</label>
