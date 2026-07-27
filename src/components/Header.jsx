@@ -9,7 +9,7 @@ function Header() {
     e.preventDefault();
     const { success, error } = await signOut();
     if (success) {
-      navigate("/");
+      navigate("/signin");
     } else {
       setError(error.message);
     }

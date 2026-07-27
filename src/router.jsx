@@ -3,11 +3,15 @@ import Signin from "./components/Signin";
 import Header from "./components/Header";
 import Signup from "./components/Signup";
 import Dashboard from "./routes/Dashboard";
-
+import RootRedirect from "./routes/RootRedirect";
 
 export const router = createBrowserRouter([
   {
     path: "/",
+    element: <RootRedirect />,
+  },
+  {
+    path: "/signin",
     element: <Signin />,
   },
   {
@@ -22,5 +26,5 @@ export const router = createBrowserRouter([
   {
     path: "/signup",
     element: <Signup />,
-  }
+  },
 ]);
