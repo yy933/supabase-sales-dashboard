@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { AuthContext } from "../Hooks/useAuth";
-import supabase from "../supabase-client";
+import supabase from "../supabase/supabase-client";
 
 export default function AuthContextProvider({ children }) {
   //Auth functions (signin, signup, logout)
@@ -127,7 +127,9 @@ export default function AuthContextProvider({ children }) {
     }
   };
   return (
-    <AuthContext.Provider value={{ session, loading, signInUser, signOut, signUpNewUser }}>
+    <AuthContext.Provider
+      value={{ session, loading, signInUser, signOut, signUpNewUser }}
+    >
       {children}
     </AuthContext.Provider>
   );
