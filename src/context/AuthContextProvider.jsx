@@ -71,18 +71,6 @@ export default function AuthContextProvider({ children }) {
     }
   };
 
-  //Sign out
-  /**
-  Challenge:
-  * 1) Using the 'signInUser' function as a template, write a 'signOut' 
-      function calling the 'auth.signOut()' method
-  * 2) Only destructure 'error' and handle both Supabase and unexpected errors
-      in a similar way to in the 'signInUser' function
-  * 3) Add this function to the AuthContext's value prop
-      Note: There is no need to pass the Supabase '.signOut()' method any 
-      parameters.
-  */
-
   const signOut = async () => {
     try {
       //supabase method
@@ -105,8 +93,35 @@ export default function AuthContextProvider({ children }) {
       };
     }
   };
+
+  const signUpNewUser = async (email, password) => {
+    try {
+      //supabase method
+      const { data, error } = await supabase.auth.signUp({
+        email: email.toLowerCase(),
+        password,
+      });
+      //handle supabase error explicitly
+      if (error) {
+        return { success: false, error: error.message };
+      }
+      //success
+      console.log("supabase sign up success: ", data);
+      return {
+        success: true,
+        data,
+      };
+    } catch (error) {
+      //Unexpected error
+      console.error("unexpected error occured during sign up: ", error.message);
+      return {
+        success: false,
+        error: "An unexpected error occurred. Please try again.",
+      };
+    }
+  };
   return (
-    <AuthContext.Provider value={{ session, loading, signInUser, signOut }}>
+    <AuthContext.Provider value={{ session, loading, signInUser, signOut, signUpNewUser }}>
       {children}
     </AuthContext.Provider>
   );
