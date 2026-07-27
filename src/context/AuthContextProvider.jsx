@@ -94,12 +94,18 @@ export default function AuthContextProvider({ children }) {
     }
   };
 
-  const signUpNewUser = async (email, password) => {
+  const signUpNewUser = async (email, password, name, accountType) => {
     try {
       //supabase method
       const { data, error } = await supabase.auth.signUp({
         email: email.toLowerCase(),
         password,
+        options: {
+          data: {
+            name: name,
+            account_type: accountType,
+          },
+        },
       });
       //handle supabase error explicitly
       if (error) {
