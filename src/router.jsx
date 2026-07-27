@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import Signup from "./components/Signup";
 import Dashboard from "./routes/Dashboard";
 import RootRedirect from "./routes/RootRedirect";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 export const router = createBrowserRouter([
   {
@@ -17,10 +18,10 @@ export const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: (
-      <>
+      <ProtectedRoute>
         <Header />
         <Dashboard />
-      </>
+      </ProtectedRoute>
     ),
   },
   {
