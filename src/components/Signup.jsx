@@ -56,9 +56,9 @@ const Signup = () => {
             placeholder=""
             required
             aria-required="true"
-            //aria-invalid=
-            //aria-describedby=
-            //disabled=
+            aria-invalid={error ? "true" : "false"}
+            aria-describedby={error ? "signup-error" : null}
+            disabled={isPending}
           />
 
           <label htmlFor="password">Password</label>
@@ -70,9 +70,9 @@ const Signup = () => {
             placeholder=""
             required
             aria-required="true"
-            //aria-invalid=
-            //aria-describedby=
-            //disabled=
+            aria-invalid={error ? "true" : "false"}
+            aria-describedby={error ? "signup-error" : null}
+            disabled={isPending}
           />
 
           <button
