@@ -1,12 +1,20 @@
 import { useActionState } from "react";
 import supabase from "../supabase/supabase-client";
+import { useAuth } from "../Hooks/useAuth";
 
-function Form({ data: metrics }) {
+
+function Form({ data }) {
+  const { users } = useAuth();
   const [error, submitAction, isPending] = useActionState(
     async (previousState, formData) => {
+      const submittedName = formData.get("name");
+      const user = users.find((user) => user.name === submittedName);
+      if (!user) {
+        return new Error("User not found");
+      }
       //Action logic
       const newDeal = {
-        name: formData.get("name"),
+        user_id: user.id,
         value: Number(formData.get("value")),
       };
       console.log(newDeal);
@@ -24,9 +32,9 @@ function Form({ data: metrics }) {
   );
 
   const generateOptions = () => {
-    return metrics.map((metric) => (
-      <option key={metric.name} value={metric.name}>
-        {metric.name}
+    return users.map((user) => (
+      <option key={user.id} value={user.name}>
+        {user.name}
       </option>
     ));
   };
@@ -48,7 +56,7 @@ function Form({ data: metrics }) {
           <select
             id="deal-name"
             name="name"
-            defaultValue={metrics?.[0]?.name || ""}
+            defaultValue={data?.[0]?.name || ""}
             aria-required="true"
             aria-invalid={error ? "true" : "false"}
             disabled={isPending}

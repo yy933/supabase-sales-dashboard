@@ -53,7 +53,10 @@ function Dashboard() {
             <Form data={metrics} />
           </>
         ) : (
-          <p>No data found.</p>
+          <>
+            <p>No data found.</p>
+            <Form data={metrics} />
+          </>
         )}
       </div>
     </div>
