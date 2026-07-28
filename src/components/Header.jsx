@@ -1,10 +1,13 @@
 import { useAuth } from "../Hooks/useAuth";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 function Header() {
-  const { signOut, session } = useAuth();
+  const { signOut, session, users } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState(null);
+  const currentUser = users.find((user) => user.id === session?.user?.id);
+  console.log(currentUser);
   const handleSignOut = async (e) => {
     e.preventDefault();
     const { success, error } = await signOut();
@@ -14,26 +17,33 @@ function Header() {
       setError(error.message);
     }
   };
+  const accountTypeMap = {
+    rep: "Sales Rep",
+    admin: "Admin",
+  };
+  const accountTypeDisplay = currentUser?.account_type
+    ? accountTypeMap[currentUser?.account_type]
+    : "";
   return (
     <>
-      <header>
+      <header role="banner" aria-label="Dashboard header">
         <div
           className="header-email"
           role="navigation"
           aria-label="User account navigation"
         >
-          <button onClick={handleSignOut} aria-label="Sign out of your account">
-            Sign out
-          </button>
           <h2>
             <span className="sr-only">Logged in as:</span>
-            {session?.user?.email}
+            {currentUser?.name} ({accountTypeDisplay})
           </h2>
           {error && (
             <div role="role" className="error-message" id="signout-error">
               {error}
             </div>
           )}
+          <button onClick={handleSignOut} aria-label="Sign out of your account">
+            Sign out
+          </button>
         </div>
         <h1>
           <svg
