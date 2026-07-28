@@ -57,7 +57,7 @@ function Form() {
         {currentUser?.account_type === "rep" ? (
           <label htmlFor="deal-name">
             Name:
-            <select
+            <input
               type="text"
               id="deal-name"
               name="name"
@@ -67,8 +67,7 @@ function Form() {
               aria-label="Sales representative name"
               aria-readonly="true"
             >
-              {generateOptions()}
-            </select>
+            </input>
           </label>
         ) : (
           <label htmlFor="deal-name">
