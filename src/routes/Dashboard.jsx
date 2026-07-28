@@ -55,6 +55,7 @@ function Dashboard() {
         ) : (
           <>
             <p>No data found.</p>
+            <Chart data={metrics} />
             <Form data={metrics} />
           </>
         )}
