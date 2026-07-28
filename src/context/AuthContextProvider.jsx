@@ -8,6 +8,7 @@ export default function AuthContextProvider({ children }) {
   //Session state (user info, sign-in status)
   const [session, setSession] = useState(undefined);
   const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     //1) Check on 1st render for a session (getSession())
@@ -43,6 +44,35 @@ export default function AuthContextProvider({ children }) {
       subscription?.unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchUsers() {
+      // Guard Clause：if not login (session is null/undefined)， set users empty array and return
+      if (!session) {
+        setUsers([]);
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from("user_profiles")
+          .select("id, name, account_type");
+        if (error) throw error;
+        if (isMounted) {
+          setUsers(data || []);
+          console.log("Fetch users: ", data);
+        }
+      } catch (error) {
+        console.error("Error fetching users:", error.message || error);
+      }
+    }
+    fetchUsers();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [session]);
 
   const signInUser = async (email, password) => {
     try {
@@ -128,7 +158,7 @@ export default function AuthContextProvider({ children }) {
   };
   return (
     <AuthContext.Provider
-      value={{ session, loading, signInUser, signOut, signUpNewUser }}
+      value={{ session, loading, signInUser, signOut, signUpNewUser, users }}
     >
       {children}
     </AuthContext.Provider>
