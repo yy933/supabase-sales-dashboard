@@ -2,9 +2,8 @@ import { useActionState } from "react";
 import supabase from "../supabase/supabase-client";
 import { useAuth } from "../Hooks/useAuth";
 
-
-function Form({ data }) {
-  const { users } = useAuth();
+function Form() {
+  const { users, session } = useAuth();
   const [error, submitAction, isPending] = useActionState(
     async (previousState, formData) => {
       const submittedName = formData.get("name");
@@ -31,12 +30,17 @@ function Form({ data }) {
     null, // Initial state
   );
 
+  const currentUser = users.find((user) => user.id === session?.user?.id);
+  const firstRep = users.find((u) => u.account_type === "rep");
+
   const generateOptions = () => {
-    return users.map((user) => (
-      <option key={user.id} value={user.name}>
-        {user.name}
-      </option>
-    ));
+    return users
+      .filter((user) => user.account_type === "rep")
+      .map((user) => (
+        <option key={user.id} value={user.name}>
+          {user.name}
+        </option>
+      ));
   };
 
   return (
@@ -50,20 +54,37 @@ function Form({ data }) {
           Use this form to add a new sales deal. Select a sales rep and enter
           the amount.
         </div>
-
-        <label htmlFor="deal-name">
-          Name:
-          <select
-            id="deal-name"
-            name="name"
-            defaultValue={data?.[0]?.name || ""}
-            aria-required="true"
-            aria-invalid={error ? "true" : "false"}
-            disabled={isPending}
-          >
-            {generateOptions()}
-          </select>
-        </label>
+        {currentUser?.account_type === "rep" ? (
+          <label htmlFor="deal-name">
+            Name:
+            <select
+              type="text"
+              id="deal-name"
+              name="name"
+              value={currentUser?.name || ""}
+              readOnly
+              className="rep-name-input"
+              aria-label="Sales representative name"
+              aria-readonly="true"
+            >
+              {generateOptions()}
+            </select>
+          </label>
+        ) : (
+          <label htmlFor="deal-name">
+            Name:
+            <select
+              id="deal-name"
+              name="name"
+              defaultValue={firstRep?.name || ""}
+              aria-required="true"
+              aria-invalid={error ? "true" : "false"}
+              disabled={isPending}
+            >
+              {generateOptions()}
+            </select>
+          </label>
+        )}
 
         <label htmlFor="deal-value">
           Amount: $
