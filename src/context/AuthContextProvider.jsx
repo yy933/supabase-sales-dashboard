@@ -12,20 +12,20 @@ export default function AuthContextProvider({ children }) {
 
   useEffect(() => {
     //1) Check on 1st render for a session (getSession())
-    let isMounted = true;
+    let active = true;
     async function getInitialSession() {
       try {
         const { data, error } = await supabase.auth.getSession();
         if (error) throw error;
-        if (isMounted) {
+        if (active) {
           setSession(data.session);
           console.log("Session: ", data.session);
         }
       } catch (error) {
         console.error("Error getting initial session:", error.message || error);
-        if (isMounted) setSession(null);
+        if (active) setSession(null);
       } finally {
-        if (isMounted) setLoading(false);
+        if (active) setLoading(false);
       }
     }
 
@@ -40,16 +40,16 @@ export default function AuthContextProvider({ children }) {
     });
 
     return () => {
-      isMounted = false;
+      active = false;
       subscription?.unsubscribe();
     };
   }, []);
 
   useEffect(() => {
-    let isMounted = true;
+    let active = true;
     async function fetchUsers() {
       // Guard Clause：if not login (session is null/undefined)， set users empty array and return
-      if (!session) {
+      if (!session?.user?.id) {
         setUsers([]);
         return;
       }
@@ -59,7 +59,7 @@ export default function AuthContextProvider({ children }) {
           .from("user_profiles")
           .select("id, name, account_type");
         if (error) throw error;
-        if (isMounted) {
+        if (active) {
           setUsers(data || []);
           console.log("Fetch users: ", data);
         }
@@ -70,9 +70,9 @@ export default function AuthContextProvider({ children }) {
     fetchUsers();
 
     return () => {
-      isMounted = false;
+      active = false;
     };
-  }, [session]);
+  }, [session?.user?.id]);
 
   const signInUser = async (email, password) => {
     try {
@@ -160,7 +160,7 @@ export default function AuthContextProvider({ children }) {
     <AuthContext.Provider
       value={{ session, loading, signInUser, signOut, signUpNewUser, users }}
     >
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
 }
