@@ -1,16 +1,81 @@
-# React + Vite
+# Sales Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React + Vite dashboard for tracking sales performance in real time. The app lets users sign in, view quarterly sales totals, and add new deals through a simple form. When a deal is submitted, the dashboard updates instantly through Supabase Realtime.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- User authentication with Supabase
+- Protected routes for signed-in users
+- Role-based account handling for admins and sales reps
+- Add new sales deals from the dashboard
+- Visualize total sales with a responsive bar chart
+- Live updates when sales data changes
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React 19
+- React Router 7
+- Vite 8
+- Supabase
+- Recharts
+- ESLint
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+2. Create a `.env` file in the project root and add your Supabase credentials:
+
+   ```env
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_KEY=your_supabase_anon_key
+   ```
+
+3. Start the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+4. Open the local Vite URL shown in the terminal.
+
+## Available Scripts
+
+- `npm run dev` – start the development server
+- `npm run build` – create a production build
+- `npm run preview` – preview the production build locally
+- `npm run lint` – run ESLint checks
+
+## Project Structure
+
+- `src/components` – reusable UI components such as the header, chart, form, and auth screens
+- `src/routes` – main route views including the dashboard and redirect logic
+- `src/context` – authentication context provider
+- `src/Hooks` – custom auth hook
+- `src/supabase` – Supabase client and SQL assets
+- `src/utils` – helper functions for fetching sales metrics
+
+## Supabase Setup Notes
+
+This project expects Supabase to be configured with:
+
+- Authentication enabled
+- A `user_profiles` table containing at least:
+  - `id`
+  - `name`
+  - `account_type`
+- A `sales_deals` table containing at least:
+  - `user_id`
+  - `value`
+
+Realtime should also be enabled for the `sales_deals` table if you want live dashboard updates.
+
+## Notes
+
+- Authenticated users are redirected to the dashboard.
+- Unauthenticated users are redirected to the sign-in page.
+- The dashboard form automatically uses the current rep’s name for sales reps, while admins can choose from the list of reps.
