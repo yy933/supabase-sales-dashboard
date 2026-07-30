@@ -32,7 +32,7 @@ A React + Vite dashboard for tracking sales performance in real time. The app le
 
    ```env
    VITE_SUPABASE_URL=your_supabase_url
-   VITE_SUPABASE_KEY=your_supabase_anon_key
+   VITE_SUPABASE_KEY=your_supabase_publishable_key
    ```
 
 3. Start the development server:
